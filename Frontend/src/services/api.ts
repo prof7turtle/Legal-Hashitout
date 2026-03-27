@@ -174,6 +174,16 @@ export const cases = {
       throw error;
     }
   },
+
+  addDocument: async (id: string, docData: { title: string; fileUrl: string }) => {
+    try {
+      const response = await api.post(`/efiled-cases/${id}/documents`, docData);
+      return response.data;
+    } catch (error: any) {
+      console.error('API addDocument error:', error.response || error);
+      throw error;
+    }
+  },
 };
 
 // Meetings API functions

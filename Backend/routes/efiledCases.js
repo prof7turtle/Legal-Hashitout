@@ -49,7 +49,7 @@ router.post('/', protect, validateEFiledCase, async (req, res) => {
     }
 
     // Create new case with timeline entry
-    const eFiledCase = new EFiledCase({
+    const caseData = {
       litigant: req.body.litigant,
       case: req.body.case,
       timeline: [{
@@ -57,7 +57,14 @@ router.post('/', protect, validateEFiledCase, async (req, res) => {
         description: 'New e-filing case submitted',
         performedBy: req.user._id
       }]
-    });
+    };
+
+    // If the person filing is a lawyer, assign them to the case automatically
+    if (req.user.role === 'lawyer') {
+      caseData.assignedLawyer = req.user._id;
+    }
+
+    const eFiledCase = new EFiledCase(caseData);
 
     console.log('Created e-filed case:', eFiledCase);
 
@@ -128,7 +135,17 @@ router.get('/', protect, async (req, res) => {
 
     // Role-based filtering
     if (req.user.role === 'lawyer') {
-      filter.assignedLawyer = req.user._id;
+      filter.$or = [
+        { assignedLawyer: req.user._id },
+        { 
+          timeline: { 
+            $elemMatch: { 
+              action: 'Case Filed', 
+              performedBy: req.user._id 
+            } 
+          } 
+        }
+      ];
     }
 
     // Text search

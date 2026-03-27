@@ -39,9 +39,20 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI, {
+  serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+})
   .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+  .catch((err) => {
+    console.error('MongoDB connection error:', err.message);
+    if (err.message.includes('ETIMEDOUT') || err.message.includes('buffering timed out')) {
+      console.error('\n' + '='.repeat(50));
+      console.error('TROUBLESHOOTING TIP:');
+      console.error('If you are using MongoDB Atlas, ensure your CURRENT IP is whitelisted under "Network Access" in the Atlas dashboard.');
+      console.error('If you are using local MongoDB, ensure the service is running (mongod).');
+      console.error('='.repeat(50) + '\n');
+    }
+  });
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);

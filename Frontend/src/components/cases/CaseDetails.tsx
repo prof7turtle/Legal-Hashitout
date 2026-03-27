@@ -23,12 +23,17 @@ import {
 } from "@/components/ui/table";
 import { cases } from "@/services/api";
 
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
+
 export function CaseDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [caseData, setCaseData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     const fetchCaseDetails = async () => {
@@ -77,6 +82,29 @@ export function CaseDetails() {
 
     fetchCaseDetails();
   }, [id]);
+
+  const handleUploadDocument = async () => {
+    if (!id) return;
+    const title = prompt("Enter document title:");
+    if (!title) return;
+    
+    // In a real app, this would be a file upload. 
+    // For now, we'll mock a file URL.
+    const fileUrl = `https://example.com/docs/${encodeURIComponent(title)}.pdf`;
+    
+    try {
+      setIsUploading(true);
+      await cases.addDocument(id, { title, fileUrl });
+      toast.success("Document uploaded successfully");
+      // Refresh data
+      window.location.reload();
+    } catch (err) {
+      console.error("Upload failed:", err);
+      toast.error("Failed to upload document");
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   if (loading) {
     return <div className="text-center py-12 text-muted-foreground">Loading case details...</div>;
@@ -127,12 +155,21 @@ export function CaseDetails() {
           </Badge>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" className="flex items-center gap-2">
-            <FileText className="h-4 w-4" /> Documents
-          </Button>
-          <Button onClick={() => navigate('/meeting')}  className="flex items-center gap-2">
-            <Video className="h-4 w-4" /> Schedule a Court Hearing
-          </Button>
+          {user?.role === 'lawyer' && (
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2"
+              onClick={handleUploadDocument}
+              disabled={isUploading}
+            >
+              <FileText className="h-4 w-4" /> {isUploading ? "Uploading..." : "Upload Proof"}
+            </Button>
+          )}
+          {user?.role === 'judge' && (
+            <Button onClick={() => navigate('/meeting')} className="flex items-center gap-2">
+              <Video className="h-4 w-4" /> Schedule a Court Hearing
+            </Button>
+          )}
         </div>
       </div>
 

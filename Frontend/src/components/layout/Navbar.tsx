@@ -27,7 +27,7 @@ export function Navbar() {
 
   // Combine links based on user role
   const links = React.useMemo(() => {
-    if (user?.role === 'judge') {
+    if (user?.role === 'judge' || user?.role === 'lawyer' || user?.role === 'litigant') {
       return [...baseLinks, ...judgeLinks];
     }
     return baseLinks;
