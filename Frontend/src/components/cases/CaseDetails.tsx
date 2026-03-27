@@ -3,7 +3,8 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import { 
   ChevronLeft, 
   Calendar, 
@@ -131,6 +132,32 @@ export function CaseDetails() {
     fileInputRef.current?.click();
   };
 
+  const [isActionLoading, setIsActionLoading] = useState(false);
+  const [decision, setDecision] = useState({
+    severity: 'medium',
+    hearingType: 'online',
+    description: ''
+  });
+
+  const handleJudgeAction = async (status: 'approved' | 'rejected') => {
+    if (!id) return;
+    try {
+      setIsActionLoading(true);
+      await cases.performAction(id, {
+        status,
+        ...decision
+      });
+      toast.success(`Case ${status === 'approved' ? 'accepted' : 'rejected'} successfully`);
+      // Refresh
+      window.location.reload();
+    } catch (err) {
+      console.error("Action failed:", err);
+      toast.error("Failed to update case status");
+    } finally {
+      setIsActionLoading(false);
+    }
+  };
+
   if (loading) {
     return <div className="text-center py-12 text-muted-foreground">Loading case details...</div>;
   }
@@ -167,6 +194,76 @@ export function CaseDetails() {
 
   return (
     <div className="space-y-6">
+      {/* Judge Action Panel - Only visible to Judge for pending cases */}
+      {user?.role === 'judge' && caseData.status.toLowerCase() === 'pending' && (
+        <Card className="border-primary/50 bg-primary/5 mb-6">
+          <CardHeader>
+            <CardTitle className="text-lg">Judge Decision Required</CardTitle>
+            <CardDescription>Review this case filing and set initial parameters</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Case Severity</Label>
+                <div className="flex gap-2">
+                  {['low', 'medium', 'high'].map((sev) => (
+                    <Button
+                      key={sev}
+                      variant={decision.severity === sev ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setDecision({ ...decision, severity: sev })}
+                      className="capitalize"
+                    >
+                      {sev}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Hearing Preference</Label>
+                <div className="flex gap-2">
+                  {['online', 'offline'].map((type) => (
+                    <Button
+                      key={type}
+                      variant={decision.hearingType === type ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setDecision({ ...decision, hearingType: type })}
+                      className="capitalize"
+                    >
+                      {type}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Remarks / Initial Instructions</Label>
+              <textarea
+                className="w-full min-h-[80px] p-2 rounded-md border bg-background text-sm"
+                placeholder="Enter any initial instructions or reasons for the decision..."
+                value={decision.description}
+                onChange={(e) => setDecision({ ...decision, description: e.target.value })}
+              />
+            </div>
+          </CardContent>
+          <CardFooter className="flex justify-end gap-3">
+            <Button 
+              variant="destructive" 
+              onClick={() => handleJudgeAction('rejected')}
+              disabled={isActionLoading}
+            >
+              Reject Case
+            </Button>
+            <Button 
+              onClick={() => handleJudgeAction('approved')}
+              disabled={isActionLoading}
+            >
+              {isActionLoading ? 'Processing...' : 'Accept & Categorize'}
+            </Button>
+          </CardFooter>
+        </Card>
+      )}
+
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="icon" asChild>

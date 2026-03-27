@@ -1,9 +1,15 @@
 
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Scale, User, Users } from "lucide-react";
+import { Scale, User, Users, Search, Check } from "lucide-react";
 import { Control } from "react-hook-form";
 import { z } from "zod";
+import { useEffect, useState } from "react";
+import { auth } from "@/services/api";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { cn } from "@/lib/utils";
 
 // Import the formSchema type
 import { meetingFormSchema } from "./schema";
@@ -16,6 +22,23 @@ interface ParticipantsSectionProps {
 }
 
 const ParticipantsSection = ({ control, defaultJudgeEmail }: ParticipantsSectionProps) => {
+  const [lawyers, setLawyers] = useState<{ fullName: string; email: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLawyers = async () => {
+      try {
+        const data = await auth.getLawyers();
+        setLawyers(data);
+      } catch (error) {
+        console.error("Failed to fetch lawyers:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchLawyers();
+  }, []);
+
   return (
     <div className="border-t border-border/50 my-6 pt-6">
       <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
@@ -58,43 +81,72 @@ const ParticipantsSection = ({ control, defaultJudgeEmail }: ParticipantsSection
               <h4 className="font-medium">Lawyers</h4>
             </div>
             <div className="space-y-4">
-              <FormField
-                control={control}
-                name="lawyer1Email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Lawyer 1 Email</FormLabel>
-                    <FormControl>
+              {[1, 2].map((num) => (
+                <FormField
+                  key={num}
+                  control={control}
+                  name={`lawyer${num}Email` as any}
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Lawyer {num} Email</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "w-full justify-between font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value || "Select registered lawyer email..."}
+                              <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
+                          <Command>
+                            <CommandInput placeholder="Search lawyers..." />
+                            <CommandEmpty>No lawyer found. You can still type custom email below.</CommandEmpty>
+                            <CommandList>
+                              <CommandGroup>
+                                {lawyers.map((lawyer) => (
+                                  <CommandItem
+                                    value={lawyer.email}
+                                    key={lawyer.email}
+                                    onSelect={() => {
+                                      field.onChange(lawyer.email);
+                                    }}
+                                  >
+                                    <Check
+                                      className={cn(
+                                        "mr-2 h-4 w-4",
+                                        lawyer.email === field.value ? "opacity-100" : "opacity-0"
+                                      )}
+                                    />
+                                    <div className="flex flex-col">
+                                      <span>{lawyer.fullName}</span>
+                                      <span className="text-xs text-muted-foreground">{lawyer.email}</span>
+                                    </div>
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                       <Input 
                         type="email" 
-                        placeholder="lawyer1@example.com" 
+                        placeholder="Or type custom email..." 
                         {...field}
-                        className="input-focus-ring"
+                        className="mt-2"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={control}
-                name="lawyer2Email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Lawyer 2 Email</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="email" 
-                        placeholder="lawyer2@example.com" 
-                        {...field}
-                        className="input-focus-ring"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
             </div>
           </div>
           

@@ -164,4 +164,16 @@ router.get('/me', protect, async (req, res) => {
   }
 });
 
-module.exports = router; 
+// @route   GET /api/auth/lawyers
+// @desc    Get all lawyers (for scheduling)
+// @access  Private
+router.get('/lawyers', protect, async (req, res) => {
+  try {
+    const lawyers = await User.find({ role: 'lawyer' }).select('fullName email');
+    res.json(lawyers);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+module.exports = router;

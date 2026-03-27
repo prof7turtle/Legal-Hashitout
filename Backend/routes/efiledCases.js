@@ -307,4 +307,48 @@ router.put('/:id/status', protect, authorize('admin', 'judge'), async (req, res)
   }
 });
 
-module.exports = router; 
+// @route   PUT /api/efiled-cases/:id/action
+// @desc    Judge action (Approve/Reject/Severity/HearingType)
+// @access  Private/Judge
+router.put('/:id/action', protect, async (req, res) => {
+  try {
+    if (req.user.role !== 'judge') {
+      return res.status(403).json({ message: 'Only judges can perform this action' });
+    }
+
+    const { status, severity, hearingType, description } = req.body;
+    const efiledCase = await EFiledCase.findById(req.params.id);
+
+    if (!efiledCase) {
+      return res.status(404).json({ message: 'Case not found' });
+    }
+
+    // Update fields
+    if (status) efiledCase.status = status;
+    if (severity) efiledCase.severity = severity;
+    if (hearingType) efiledCase.hearingType = hearingType;
+    efiledCase.assignedJudge = req.user._id;
+
+    // Add to timeline
+    efiledCase.timeline.push({
+      action: status === 'approved' ? 'Case Accepted' : 'Case Status Updated',
+      description: description || `Case categorized as ${severity} severity for ${hearingType} hearing.`,
+      performedBy: req.user._id
+    });
+
+    await efiledCase.save();
+    
+    // Return populated case
+    const updatedCase = await EFiledCase.findById(efiledCase._id)
+      .populate('assignedJudge', 'fullName email')
+      .populate('assignedLawyer', 'fullName email')
+      .populate('timeline.performedBy', 'fullName');
+
+    res.json(updatedCase);
+  } catch (error) {
+    console.error('Error in judge action:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+module.exports = router;

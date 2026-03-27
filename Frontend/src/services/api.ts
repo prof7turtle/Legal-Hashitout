@@ -85,6 +85,16 @@ export const auth = {
       throw error;
     }
   },
+
+  getLawyers: async () => {
+    try {
+      const response = await api.get('/auth/lawyers');
+      return response.data;
+    } catch (error: any) {
+      console.error('API getLawyers error:', error.response || error);
+      throw error;
+    }
+  },
 };
 
 // Analytics API functions
@@ -184,6 +194,16 @@ export const cases = {
       throw error;
     }
   },
+
+  performAction: async (id: string, actionData: any) => {
+    try {
+      const response = await api.put(`/efiled-cases/${id}/action`, actionData);
+      return response.data;
+    } catch (error: any) {
+      console.error('API performAction error:', error.response || error);
+      throw error;
+    }
+  },
 };
 
 // Meetings API functions
@@ -214,6 +234,16 @@ export const meetings = {
       return response.data;
     } catch (error: any) {
       console.error('API joinMeeting error:', error.response || error);
+      throw error;
+    }
+  },
+
+  sendInvites: async (inviteData: any) => {
+    try {
+      const response = await api.post('/meeting/invite', inviteData);
+      return response.data;
+    } catch (error: any) {
+      console.error('API sendInvites error:', error.response || error);
       throw error;
     }
   },

@@ -33,33 +33,35 @@ interface Event {
   currentStage?: string;
 }
 
-// Supreme Court Holidays 2025
-const HOLIDAYS_2025: Event[] = [
-  { title: 'New Year Holiday', start: '2025-01-01', color: '#ff9f89', display: 'background' },
-  { title: 'Local Holiday', start: '2025-01-13', color: '#ff9f89', display: 'background' },
-  { title: 'Makar Sankranti/Magh Bihu/Pongal', start: '2025-01-14', color: '#ff9f89', display: 'background' },
-  { title: 'Maha Shivaratri', start: '2025-02-26', color: '#ff9f89', display: 'background' },
-  { title: 'Holi Holidays', start: '2025-03-10', end: '2025-03-15', color: '#ff9f89', display: 'background' },
-  { title: 'Id-ul-Fitr', start: '2025-03-31', color: '#ff9f89', display: 'background' },
-  { title: 'Mahavir Jayanti', start: '2025-04-10', color: '#ff9f89', display: 'background' },
-  { title: 'Good Friday', start: '2025-04-18', color: '#ff9f89', display: 'background' },
-  { title: 'Buddha Purnima', start: '2025-05-13', color: '#ff9f89', display: 'background' },
-  { title: 'Independence Day', start: '2025-08-15', color: '#ff9f89', display: 'background' },
-  { title: 'Janmashtami', start: '2025-08-16', color: '#ff9f89', display: 'background' },
-  { title: 'Ganesh Chaturthi', start: '2025-08-27', color: '#ff9f89', display: 'background' },
-  { title: 'Milad-un-Nabi or Id-e-Milad', start: '2025-09-05', color: '#ff9f89', display: 'background' },
-  { title: 'Dussehra Holidays', start: '2025-09-29', end: '2025-10-04', color: '#ff9f89', display: 'background' },
-  { title: 'Diwali Holidays', start: '2025-10-20', end: '2025-10-25', color: '#ff9f89', display: 'background' },
-  { title: 'Guru Nanak Birthday', start: '2025-11-05', color: '#ff9f89', display: 'background' },
-  { title: 'Christmas & New Year Holidays', start: '2025-12-22', end: '2025-12-31', color: '#ff9f89', display: 'background' }
+// Supreme Court Holidays 2026
+const HOLIDAYS_2026: Event[] = [
+  { title: 'New Year Holiday', start: '2026-01-01', end: '2026-01-02', color: '#ff9f89', display: 'background' },
+  { title: 'Makar Sankranti/Magh Bihu/Pongal', start: '2026-01-14', color: '#ff9f89', display: 'background' },
+  { title: 'Republic Day', start: '2026-01-26', color: '#ff9f89', display: 'background' },
+  { title: 'Holi Holidays', start: '2026-03-02', end: '2026-03-07', color: '#ff9f89', display: 'background' },
+  { title: 'Id-ul-Fitr', start: '2026-03-21', color: '#ff9f89', display: 'background' },
+  { title: 'Ram Navami', start: '2026-03-26', color: '#ff9f89', display: 'background' },
+  { title: 'Mahavir Jayanti', start: '2026-03-31', color: '#ff9f89', display: 'background' },
+  { title: 'Good Friday', start: '2026-04-03', color: '#ff9f89', display: 'background' },
+  { title: 'Buddha Purnima', start: '2026-05-01', color: '#ff9f89', display: 'background' },
+  { title: 'Id-ul-Zuha (Bakrid)', start: '2026-05-27', color: '#ff9f89', display: 'background' },
+  { title: 'Muharram', start: '2026-06-26', color: '#ff9f89', display: 'background' },
+  { title: 'Independence Day', start: '2026-08-15', color: '#ff9f89', display: 'background' },
+  { title: 'Janmashtami', start: '2026-09-04', color: '#ff9f89', display: 'background' },
+  { title: 'Ganesh Chaturthi', start: '2026-09-14', color: '#ff9f89', display: 'background' },
+  { title: 'Mahatma Gandhi Birthday', start: '2026-10-02', color: '#ff9f89', display: 'background' },
+  { title: 'Dussehra Holidays', start: '2026-10-19', end: '2026-10-24', color: '#ff9f89', display: 'background' },
+  { title: 'Diwali Holidays', start: '2026-11-09', end: '2026-11-14', color: '#ff9f89', display: 'background' },
+  { title: 'Guru Nanak Birthday', start: '2026-11-24', color: '#ff9f89', display: 'background' },
+  { title: 'Christmas & New Year Holidays', start: '2026-12-21', end: '2026-12-31', color: '#ff9f89', display: 'background' }
 ];
 
-// Partial Court Working Days
-const PARTIAL_WORKING_DAYS: Event[] = [
+// Partial Court Working Days 2026
+const PARTIAL_WORKING_DAYS_2026: Event[] = [
   { 
-    title: 'Partial Court Working', 
-    start: '2025-05-26', 
-    end: '2025-07-13', 
+    title: 'Partial Court Working (Summer Vacation)', 
+    start: '2026-06-01', 
+    end: '2026-07-12', 
     color: '#fff2b2', 
     display: 'background' 
   }
@@ -87,9 +89,9 @@ const Notes = () => (
     <h3 className="font-semibold mb-2 text-primary">Important Notes:</h3>
     <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
       <li>Court working hours: 10:30 AM to 4:30 PM</li>
-      <li>Partial Court working days: May 26 - July 13, 2025</li>
+      <li>Partial Court working days (Summer Vacation): June 1 - July 12, 2026</li>
       <li>Sundays are non-working days</li>
-      <li>The Court will remain closed during Christmas/New Year holidays (Dec 22, 2025 - Jan 1, 2026)</li>
+      <li>The Court will remain closed during Christmas/New Year holidays (Dec 21, 2026 - Jan 1, 2027)</li>
     </ul>
   </Card>
 );
@@ -104,8 +106,8 @@ export function CourtCalendar() {
   useEffect(() => {
     // Combine all calendar events
     setEvents([
-      ...HOLIDAYS_2025,
-      ...PARTIAL_WORKING_DAYS,
+      ...HOLIDAYS_2026,
+      ...PARTIAL_WORKING_DAYS_2026,
     ]);
   }, []);
 
@@ -121,7 +123,7 @@ export function CourtCalendar() {
     const date = new Date(selectInfo.start);
     
     // Check if it's a holiday
-    const isHoliday = HOLIDAYS_2025.some(holiday => {
+    const isHoliday = HOLIDAYS_2026.some(holiday => {
       const holidayStart = new Date(holiday.start);
       const holidayEnd = holiday.end ? new Date(holiday.end) : holidayStart;
       return date >= holidayStart && date <= holidayEnd;
@@ -163,8 +165,8 @@ export function CourtCalendar() {
     <div className="space-y-4">
       <div className="p-4 bg-background rounded-lg shadow-lg">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-primary">Supreme Court Calendar 2025</h2>
-          <p className="text-muted-foreground">Court schedule and holidays</p>
+          <h2 className="text-2xl font-bold text-primary">Supreme Court Calendar 2026</h2>
+          <p className="text-muted-foreground">Court schedule and holidays based on Indian Judiciary</p>
         </div>
 
         <div className="rounded-lg border bg-card">
@@ -191,8 +193,8 @@ export function CourtCalendar() {
             allDaySlot={true}
             slotDuration="00:30:00"
             selectConstraint={{
-              start: '2025-01-01',
-              end: '2025-12-31',
+              start: '2026-01-01',
+              end: '2026-12-31',
             }}
             businessHours={{
               daysOfWeek: [1, 2, 3, 4, 5], // Monday - Friday
@@ -229,7 +231,7 @@ export function CourtCalendar() {
             <div className="space-y-2">
               {selectedEvent?.status && (
                 <Badge variant={selectedEvent?.status === 'scheduled' ? 'default' : 
-                             selectedEvent?.status === 'completed' ? 'success' : 'destructive'}>
+                             selectedEvent?.status === 'completed' ? 'outline' : 'destructive'}>
                   {selectedEvent?.status}
                 </Badge>
               )}

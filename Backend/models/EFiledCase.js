@@ -83,6 +83,14 @@ const eFiledCaseSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  severity: {
+    type: String,
+    enum: ['high', 'medium', 'low']
+  },
+  hearingType: {
+    type: String,
+    enum: ['online', 'offline']
+  },
   caseNumber: {
     type: String,
     unique: true,

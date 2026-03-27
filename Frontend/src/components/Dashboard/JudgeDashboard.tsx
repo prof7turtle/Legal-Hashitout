@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link } from "react-router-dom";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Calendar, FileText, Users, Gavel, ArrowUp, ArrowDown } from "lucide-react";
 import { CourtCalendar } from "@/components/Dashboard/CourtCalendar";
 import { analytics } from "@/services/api";
@@ -180,6 +183,32 @@ export function JudgeDashboard() {
         </CardHeader>
         <CardContent>
           <CourtCalendar />
+        </CardContent>
+      </Card>
+
+      {/* Case Requests Section */}
+      <Card className="hover-card border-yellow-500/30 bg-yellow-500/5">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>Pending Case Requests</CardTitle>
+            <CardDescription>New filings awaiting your review and categorization</CardDescription>
+          </div>
+          <Badge variant="outline" className="bg-yellow-500/10 text-yellow-600 border-yellow-200">
+            {dashboardData.roleSpecific.caseBacklog} Pending
+          </Badge>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {/* Note: In a real app, this would fetch filtered pending cases. 
+                For the demo, we'll link to the overall cases list. */}
+            <p className="text-sm text-muted-foreground">
+              You have {dashboardData.roleSpecific.caseBacklog} cases awaiting review. 
+              Newly filed cases from lawyers go here first.
+            </p>
+            <Button variant="outline" asChild className="w-full md:w-auto">
+              <Link to="/cases?status=pending">Review All Requests</Link>
+            </Button>
+          </div>
         </CardContent>
       </Card>
 

@@ -59,7 +59,7 @@ const ScheduleMeetingForm = ({
       // Invalidate any relevant queries
       queryClient.invalidateQueries({ queryKey: ['meetings'] });
       
-      toast.success('Meeting scheduled successfully');
+      toast.success('Meeting scheduled and invitations sent to all participants');
       onScheduled(result.meetingLink);
     } catch (error) {
       toast.error('Failed to schedule meeting');
