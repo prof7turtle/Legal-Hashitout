@@ -6,6 +6,7 @@ import { Navbar } from '../layout/Navbar';
 import { Footer } from '../layout/Footer';
 import { VideoCall } from './VideoCall';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
 import { api } from '@/services/api';
 
 const MeetingBuilder = () => {
@@ -25,17 +26,8 @@ const MeetingBuilder = () => {
       });
     }, 100);
 
-    try {
-      // Call your backend to generate a token and channel name using the API service
-      const response = await api.post('/meeting/token', { meetingLink: link });
-      
-      setToken(response.data.token);
-      setChannel(response.data.channel);
-      setIsCallActive(true);
-    } catch (error) {
-      toast.error('Failed to start meeting');
-      setError(error instanceof Error ? error.message : 'An error occurred');
-    }
+    // LOGIC REMOVED: No more automatic video call start to avoid "black screen"
+    // The meeting link itself is sufficient
   };
 
   const handleVideoError = (error: Error) => {
@@ -49,30 +41,20 @@ const MeetingBuilder = () => {
        
 
         <section className="mb-16">
-          {isCallActive && token && channel ? (
-            <div>
-              {/* Video Call Section */}
-              <div className="mb-8">
-                <div className="flex items-center justify-center mb-4">
-                  <div className="h-3 w-3 bg-green-500 rounded-full animate-pulse mr-2"></div>
-                  <h2 className="text-xl font-semibold text-green-600">🎥 Video Call Active</h2>
-                </div>
-                <div className="h-[600px] rounded-xl overflow-hidden shadow-lg">
-                  <VideoCall
-                    channelName={channel}
-                    token={token}
-                    uid={Math.floor(Math.random() * 1000000)}
-                    onError={handleVideoError}
-                  />
-                </div>
-              </div>
+          {meetingLink ? (
+            <div id="meeting-link-section" className="animate-fade-in">
+              <MeetingLink meetingLink={meetingLink} />
               
-              {/* Meeting Details Section */}
-              {meetingLink && (
-                <div className="animate-fade-in">
-                  <MeetingLink meetingLink={meetingLink} />
-                </div>
-              )}
+              <div className="mt-8 p-6 bg-primary/5 rounded-xl border border-primary/20 text-center">
+                <h3 className="text-lg font-medium mb-2">Meeting Scheduled Successfully</h3>
+                <p className="text-muted-foreground mb-4">
+                  Invitations have been sent to all participants. You can join the meeting using the link above 
+                  at the scheduled time.
+                </p>
+                <Button onClick={() => setMeetingLink(null)} variant="outline">
+                  Schedule Another Meeting
+                </Button>
+              </div>
             </div>
           ) : (
             <ScheduleMeeting onScheduled={handleMeetingScheduled} />

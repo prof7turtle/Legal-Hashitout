@@ -1,14 +1,14 @@
+const dotenv = require('dotenv');
+dotenv.config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const dotenv = require('dotenv');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const caseRoutes = require('./routes/efiledCases');
 const meetingRoutes = require('./routes/meeting');
 const analyticsRoutes = require('./routes/analytics');
-
-dotenv.config();
 
 const app = express();
 
